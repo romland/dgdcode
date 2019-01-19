@@ -231,8 +231,12 @@ See "Nice to have some day" as well.
 
 
 ## Release Notes
-### 1.0.0 Initial release
-It works for me. :)
+### 1.0.1  19-jan-2019 
+- Disabled a development setting that forcefully opened a workspace
+- also changed how these settings are handled.
+
+### 1.0.0  19-jan-2019 Initial release
+- It works for me. :)
 
 ## About DGD
 DGD is fantastic.
