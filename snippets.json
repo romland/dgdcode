@@ -1,0 +1,411 @@
+{
+	"LPC For Loop": {
+		"prefix": "for",
+		"description": "For loop",
+        "body": [
+			"int i;",
+			"",
+			"for (i = 0; i < sizeof(${1:array}); i++) {",
+			"\t$0",
+			"}"
+		]
+	},
+	"LPC New Object": {
+		"prefix": "new",
+		"description": "New object",
+        "body": [
+			"#include <limits.h>",
+			"#include <status.h>",
+			"#include <std.h>",
+			"#include <type.h>",
+			"#include <kernel/kernel.h>",
+			"",
+			"inherit std \"${1:base}\";",
+			"",
+			"void create(varargs int clone)",
+			"{",
+			"\tstd::create();",
+			"}",
+			"",
+			"string to_string()",
+			"{",
+			"\treturn \"my new object\";",
+			"}",
+			""
+		]
+	},
+	"LPC Catch": {
+		"prefix": "catch",
+		"description": "Catch",
+        "body": [
+			"catch {",
+			"\t$0",
+			"} : {",
+			"\t$1",
+			"}"
+		]
+	},
+	"LPC Rlimits": {
+		"prefix": "rlim",
+		"description": "rlimits",
+        "body": [
+			"rlimits (-1; -1) {",
+			"\t$0",
+			"}"
+		]
+	},
+
+	"kfun002": { "scope": "c", "prefix": [ "acos" ], 				"description": "float acos() - compute arc cosine\n",
+																	"body": [ "acos(${1:float x})" ] },
+
+	"kfun003": { "scope": "c", "prefix": [ "allocate" ], 			"description": "mixed* allocate() - allocate an array\n",	
+																	"body": [ "allocate(${1:int size})" ] },
+
+	"kfun004": { "scope": "c", "prefix": [ "allocate_float" ], 		"description": "float* allocate_float() - allocate an array of floats\n",
+																	"body": [ "allocate_float(${1:int size})" ] },
+
+	"kfun005": { "scope": "c", "prefix": [ "allocate_int" ], 		"description": "int* allocate_int() - allocate an array of integers\n",
+																	"body": [ "allocate_int(${1:int size})" ] },
+																	
+	"kfun006": { "scope": "c", "prefix": [ "asin" ], 				"description": "float asin() - compute arc sine\n",
+																	"body": [ "asin(${1:float x})" ] },
+
+	"kfun007": { "scope": "c", "prefix": [ "asn_add" ], 			"description": "string asn_add() - add two arbitrary size numbers\n",
+																	"body": [ "asn_add(${1:string a}, ${2:string b}, ${3:string c})" ] },
+
+	"kfun008": { "scope": "c", "prefix": [ "asn_and" ], 			"description": "string asn_and() - logical and of two arbitrary size numbers\n",
+																	"body": [ "asn_and(${1:string a}, ${2:string b})" ] },
+
+	"kfun009": { "scope": "c", "prefix": [ "asn_cmp" ], 			"description": "string asn_cmp() - compare two arbitrary size numbers \n",
+																	"body": [ "asn_cmp(${1:string a}, ${2:string b})" ] },
+
+	"kfun010": { "scope": "c", "prefix": [ "asn_div" ], 			"description": "string asn_div() - divide one arbitrary size number by another\n",
+																	"body": [ "asn_div(${1:string a}, ${2:string b}, ${3:string m})" ] },
+
+	"kfun011": { "scope": "c", "prefix": [ "asn_lshift" ], 			"description": "string asn_lshift() - left shift an arbitrary size number\n",
+																	"body": [ "string asn_lshift(${1:string a}, ${2:int shfit}, ${3:string m})" ] },
+
+	"kfun012": { "scope": "c", "prefix": [ "asn_mod" ], 			"description": "string asn_mod() - one arbitrary size number modulo another\n",
+																	"body": [ "asn_mod(${1:string a}, ${2:string m})" ] },
+
+	"kfun013": { "scope": "c", "prefix": [ "asn_mult" ], 			"description": "string asn_mult() - multiply two arbitrary size numbers\n",
+																	"body": [ "asn_mult(${1:string a}, ${2:string b}, ${3:string m})" ] },
+
+	"kfun014": { "scope": "c", "prefix": [ "asn_or" ], 				"description": "string asn_or() - logical or of two arbitrary size numbers\n",
+																	"body": [ "asn_or(${1:string a}, ${2:string b})" ] },
+
+	"kfun015": { "scope": "c", "prefix": [ "asn_pow" ], 			"description": "string asn_pow() - raise one arbitrary size number to the power of another\n",
+																	"body": [ "asn_pow(${1:string a}, ${2:string b}, ${3:string m})" ] },
+
+	"kfun016": { "scope": "c", "prefix": [ "asn_rshift" ], 			"description": "string asn_rshift() - right shift an arbitrary size number\n",
+																	"body": [ "asn_rshift(${1:string a}, ${2:int shift})" ] },
+																	
+	"kfun017": { "scope": "c", "prefix": [ "asn_sub" ], 			"description": "string asn_sub() - subtract one arbitrary size number from another\n",
+																	"body": [ "asn_sub(${1:string a}, ${2:string b}, ${3:string m})" ] },
+	
+	"kfun018": { "scope": "c", "prefix": [ "asn_xor" ], 			"description": "string asn_xor() - logical xor of two arbitrary size numbers\n",
+																	"body": [ "asn_xor(${1:string a}, ${2:string b})" ] },
+
+	"kfun019": { "scope": "c", "prefix": [ "atan" ], 				"description": "float atan() - compute arc tangent\n",
+																	"body": [ "atan(${1:float x})" ] },
+
+	"kfun020": { "scope": "c", "prefix": [ "atan2" ], 				"description": "float atan2() - compute arc tangent of two variables\n",
+																	"body": [ "atan2(${1:float y}, ${2:float x})" ] },
+
+	"kfun021": { "scope": "c", "prefix": [ "block_input" ], 		"description": "void block_input() - block input on a connection\n",
+																	"body": [ "block_input(${1:int flag})" ] },
+
+	"kfun022": { "scope": "c", "prefix": [ "call_other" ], 			"description": "mixed call_other() - call a function in an object\n",
+																	"body": [ "call_other(${1:mixed obj}, ${2:string function}, ${3:mixed args...})" ] },
+
+	"kfun023": { "scope": "c", "prefix": [ "call_out" ], 			"description": "int call_out() - call function with delay\n",
+																	"body": [ "call_out(${1:string function}, $2{mixed delay}, ${3:mixed args...})" ] },
+
+	"kfun024": { "scope": "c", "prefix": [ "call_touch" ], 			"description": "void call_touch() - prepare to report when the object is next touched\n",
+																	"body": [ "call_touch(${1:object obj})" ] },
+
+	"kfun025": { "scope": "c", "prefix": [ "call_trace" ], 			"description": "mixed** call_trace() - return the function call trace\n",
+																	"body": [ "call_trace()" ] },
+
+	"kfun026": { "scope": "c", "prefix": [ "ceil" ], 				"description": "float ceil() - round a float towards infinity\n",
+																	"body": [ "ceil(${1:float x})" ] },
+
+	"kfun027": { "scope": "c", "prefix": [ "clone_object" ], 		"description": "object clone_object() - clone an object\n",
+																	"body": [ "clone_object(${1:object master})" ] },
+
+	"kfun028": { "scope": "c", "prefix": [ "compile_object" ], 		"description": "object compile_object() - compile an object\n",
+																	"body": [ "compile_object(${1:string file})" ] },
+
+	"kfun029": { "scope": "c", "prefix": [ "connect" ], 			"description": "void connect() - establish an outbound connection\n",
+																	"body": [ "connect(${1:string host}, ${2:int port})" ] },
+
+	"kfun030": { "scope": "c", "prefix": [ "cos" ], 				"description": "float cos() - compute cosine\n",
+																	"body": [ "cos(${1:float x})" ] },
+
+	"kfun031": { "scope": "c", "prefix": [ "cosh" ], 				"description": "float cosh() - compute hyperbolic cosine\n",
+																	"body": [ "cosh(${1:float x})" ] },
+
+	"kfun032": { "scope": "c", "prefix": [ "crypt" ], 				"description": "string crypt() - hash a password string\n",
+																	"body": [ "crypt(${1:string passwd}, ${2:varargs string salt})" ] },
+
+	"kfun033": { "scope": "c", "prefix": [ "ctime" ], 				"description": "string ctime() - convert a time integer into a string\n",
+																	"body": [ "ctime(${1:int time})" ] },
+
+	"kfun034": { "scope": "c", "prefix": [ "datagram_challenge" ], 	"description": "void datagram_challenge() - set the datagram challenge\n",
+																	"body": [ "datagram_challenge(${1:string challenge})" ] },
+
+	"kfun035": { "scope": "c", "prefix": [ "decrypt" ], 			"description": "mixed decrypt() - decrypt a string\n",
+																	"body": [ "decrypt(${1:string cipher}, ${2:string key}, ${3:varargs string mesg})" ] },
+
+	"kfun036": { "scope": "c", "prefix": [ "destruct_object" ], 	"description": "void destruct_object() - destruct an object\n",
+																	"body": [ "destruct_object(${1:object obj})" ] },
+
+	"kfun037": { "scope": "c", "prefix": [ "dump_state" ], 			"description": "void dump_state() - create a snapshot\n",
+																	"body": [ "dump_state(${1:vararg int incremental})" ] },
+
+	"kfun038": { "scope": "c", "prefix": [ "editor" ], 				"description": "string editor() - handle an editor command\n",
+																	"body": [ "editor(${1:varargs string command})" ] },
+
+	"kfun039": { "scope": "c", "prefix": [ "encrypt" ], 			"description": "mixed encrypt() - encrypt a string\n",
+																	"body": [ "encrypt(${1:string cipher}, ${2:string key}, ${3:varargs string mesg})" ] },
+
+	"kfun040": { "scope": "c", "prefix": [ "error" ], 				"description": "void error() - cause an error\n",
+																	"body": [ "error(${1:string errormessage})" ] },
+
+	"kfun041": { "scope": "c", "prefix": [ "exp" ], 				"description": "float exp() - compute exponential\n",
+																	"body": [ "exp(${1:float x})" ] },
+
+	"kfun042": { "scope": "c", "prefix": [ "explode" ], 			"description": "string* explode() - explode a string\n",
+																	"body": [ "explode(${1:string str}, ${2:string separator})" ] },
+
+	"kfun043": { "scope": "c", "prefix": [ "fabs" ], 				"description": "float fabs() - return the absolute value of a float\n",
+																	"body": [ "fabs(${1:float x})" ] },
+
+	"kfun044": { "scope": "c", "prefix": [ "find_object" ], 		"description": "object find_object() - find an object\n",
+																	"body": [ "find_object(${1:string obj})" ] },
+
+	"kfun045": { "scope": "c", "prefix": [ "floor" ], 				"description": "float floor() - round float towards minus infinity\n",
+																	"body": [ "floor(${1:float x})" ] },
+
+	"kfun046": { "scope": "c", "prefix": [ "fmod" ], 				"description": "float fmod() - floating point modulus\n",
+																	"body": [ "fmod(${1:float x}, ${2:float y})" ] },
+
+	"kfun047": { "scope": "c", "prefix": [ "frexp" ], 				"description": "mixed* frexp() - split float into fraction and exponent\n",
+																	"body": [ "frexp(${1:float x})" ] },
+
+	"kfun048": { "scope": "c", "prefix": [ "function_object" ], 	"description": "string function_object() - find a function in an object\n",
+																	"body": [ "function_object(${1:string function}, ${2:object obj})" ] },
+
+	"kfun049": { "scope": "c", "prefix": [ "get_dir" ], 			"description": "mixed** get_dir() - get information about files in a directory\n",
+																	"body": [ "get_dir(${1:string file})" ] },
+
+	"kfun050": { "scope": "c", "prefix": [ "hash_crc16" ], 			"description": "int hash_crc16() - 16 bit cyclic redundancy code\n",
+																	"body": [ "hash_crc16(${1:string str}, ${2:string extra...})" ] },
+
+	"kfun051": { "scope": "c", "prefix": [ "hash_crc32" ], 			"description": "int hash_crc32() - 32 bit cyclic redundancy code\n",
+																	"body": [ "hash_crc32(${1:string str}, ${2:string extra...})" ] },
+
+	"kfun052": { "scope": "c", "prefix": [ "hash_string" ], 		"description": "string hash_string() - hash a string with a given algorithm\n",
+																	"body": [ "hash_string(${1:string algo}, ${2:string str}, ${3:string extra...})" ] },
+
+	"kfun053": { "scope": "c", "prefix": [ "implode" ], 			"description": "string implode() - implode a string\n",
+																	"body": [ "implode(${1:string *arr}, ${2:string separator})" ] },
+
+	"kfun054": { "scope": "c", "prefix": [ "ldexp" ], 				"description": "float ldexp() - add an integer to the exponent of a float\n",
+																	"body": [ "ldexp(${1:float x}, ${2:int n})" ] },
+
+	"kfun055": { "scope": "c", "prefix": [ "log" ], 				"description": "float log() - compute natural logarithm\n",
+																	"body": [ "log(${1:float x})" ] },
+
+	"kfun056": { "scope": "c", "prefix": [ "log10" ], 				"description": "float log10() - base 10 logarithm\n",
+																	"body": [ "log10(${1:float x})" ] },
+
+	"kfun057": { "scope": "c", "prefix": [ "make_dir" ], 			"description": "int make_dir() - create a directory\n",
+																	"body": [ "make_dir(${1:string dir})" ] },
+
+	"kfun058": { "scope": "c", "prefix": [ "map_indices" ], 		"description": "mixed* map_indices() - get the indices of a mapping\n",
+																	"body": [ "map_indices(${1:mapping map})" ] },
+
+	"kfun059": { "scope": "c", "prefix": [ "map_sizeof" ], 			"description": "int map_sizeof() - get size of a mapping\n",
+																	"body": [ "map_sizeof(${1:mapping map})" ] },
+
+	"kfun060": { "scope": "c", "prefix": [ "map_values" ], 			"description": "mixed* map_values() - get the values of a mapping\n",
+																	"body": [ "map_values(${1:mapping map})" ] },
+
+	"kfun061": { "scope": "c", "prefix": [ "millitime" ], 			"description": "mixed* millitime() - return the current time in milliseconds\n",
+																	"body": [ "millitime()" ] },
+
+	"kfun062": { "scope": "c", "prefix": [ "modf" ], 				"description": "float* modf() - compute floating point remainder\n",
+																	"body": [ "modf(${1:float x})" ] },
+
+	"kfun063": { "scope": "c", "prefix": [ "new_object" ], 			"description": "object new_object() - create a new light-weight object\n",
+																	"body": [ "new_object(${1:object master})" ] },
+
+	"kfun064": { "scope": "c", "prefix": [ "object_name" ], 		"description": "string object_name() - return the name of an object\n",
+																	"body": [ "object_name(${1:object obj})" ] },
+
+	"kfun065": { "scope": "c", "prefix": [ "parse_string" ], 		"description": "mixed* parse_string() - parse a string\n",
+																	"body": [ "parse_string(${1:string grammar}, ${2:string str}, ${3:varargs int alternatives})" ] },
+
+	"kfun066": { "scope": "c", "prefix": [ "pow" ], 				"description": "float pow() - compute power\n",
+																	"body": [ "pow(${1:float x}, ${2:float y})" ] },
+
+	"kfun067": { "scope": "c", "prefix": [ "previous_object" ], 	"description": "object previous_object() - return the previous object\n",
+																	"body": [ "previous_object(${1:varargs int n})" ] },
+
+	"kfun068": { "scope": "c", "prefix": [ "previous_program" ], 	"description": "string previous_program() - return the previous program\n",
+																	"body": [ "previous_program(${1:varargs int n})" ] },
+
+	"kfun069": { "scope": "c", "prefix": [ "query_editor" ], 		"description": "string query_editor() - query editor status\n",
+																	"body": [ "query_editor(${1:object obj})" ] },
+
+	"kfun070": { "scope": "c", "prefix": [ "query_ip_name" ], 		"description": "string query_ip_name() - get the ip name of a user\n",
+																	"body": [ "query_ip_name(${1:object user})" ] },
+
+	"kfun071": { "scope": "c", "prefix": [ "query_ip_number" ], 	"description": "string query_ip_number() - get the ip number of a user\n",
+																	"body": [ "query_ip_number(${1:object user})" ] },
+
+	"kfun072": { "scope": "c", "prefix": [ "random" ], 				"description": "int random - return random number()\n",
+																	"body": [ "random(${1:int mod})" ] },
+
+	"kfun073": { "scope": "c", "prefix": [ "read_file" ], 			"description": "string read_file() - read a file\n",
+																	"body": [ "read_file(${1:string file}, ${2:varargs int offset}, ${3:int size})" ] },
+
+	"kfun074": { "scope": "c", "prefix": [ "remove_call_out" ], 	"description": "mixed remove_call_out() - remove a delayed call to a function\n",
+																	"body": [ "remove_call_out(${1:int handle})" ] },
+
+	"kfun075": { "scope": "c", "prefix": [ "remove_dir" ], 			"description": "int remove_dir() - remove a directory\n",
+																	"body": [ "remove_dir(${1:string dir})" ] },
+
+	"kfun076": { "scope": "c", "prefix": [ "remove_file" ], 		"description": "int remove_file() - remove a file\n",
+																	"body": [ "remove_file(${1:string file})" ] },
+
+	"kfun077": { "scope": "c", "prefix": [ "rename_file" ], 		"description": "int rename_file() - rename a file\n",
+																	"body": [ "rename_file(${1:string from}, ${2:string to})" ] },
+
+	"kfun078": { "scope": "c", "prefix": [ "restore_object" ], 		"description": "int restore_object() - restore variables of an object\n",
+																	"body": [ "restore_object(${1:string file})" ] },
+
+	"kfun079": { "scope": "c", "prefix": [ "save_object" ], 		"description": "void save_object() - save variables of an object\n",
+																	"body": [ "save_object(${1:string file})" ] },
+
+	"kfun080": { "scope": "c", "prefix": [ "send_datagram" ], 		"description": "int send_datagram() - send a message on the datagram channel\n",
+																	"body": [ "send_datagram(${1:string message})" ] },
+
+	"kfun081": { "scope": "c", "prefix": [ "send_message" ], 		"description": "int send_message() - send a message to a user\n",
+																	"body": [ "send_message(${1|string message,int echo|})" ] },
+
+	"kfun082": { "scope": "c", "prefix": [ "shutdown" ], 			"description": "void shutdown() - shutdown the system\n",
+																	"body": [ "shutdown(${1:varargs int hotboot})" ] },
+
+	"kfun083": { "scope": "c", "prefix": [ "sin" ], 				"description": "float sin() - comput sine\n",
+																	"body": [ "sin(${1:float x})" ] },
+
+	"kfun084": { "scope": "c", "prefix": [ "sinh" ], 				"description": "float sinh() - compute hyperbolic sine\n",
+																	"body": [ "sinh(${1:float x})" ] },
+
+	"kfun085": { "scope": "c", "prefix": [ "sizeof" ], 				"description": "int sizeof() - get size of an array\n",
+																	"body": [ "sizeof(${1:mixed *arr})" ] },
+
+	"kfun086": { "scope": "c", "prefix": [ "sqrt" ], 				"description": "float sqrt() - compute square root\n",
+																	"body": [ "sqrt(${1:float x})" ] },
+
+	"kfun087": { "scope": "c", "prefix": [ "sscanf" ], 				"description": "int sscanf() - simple string parser\n",
+																	"body": [ "sscanf(${1:string str}, ${2:string fmt}, ${3:...})" ] },
+
+	"kfun088": { "scope": "c", "prefix": [ "status" ], 				"description": "mixed* status() - get information about resource usage\n",
+																	"body": [ "status(${1:varargs object obj})" ] },
+
+	"kfun089": { "scope": "c", "prefix": [ "strlen" ], 				"description": "int strlen() - get length of a string\n",
+																	"body": [ "strlen(${1:string str})" ] },
+
+	"kfun090": { "scope": "c", "prefix": [ "swapout" ], 			"description": "void swapout() - swap out all objects\n",
+																	"body": [ "swapout()" ] },
+
+	"kfun091": { "scope": "c", "prefix": [ "tan" ], 				"description": "float tan() - compute tangent\n",
+																	"body": [ "tan(${1:float x})" ] },
+
+	"kfun092": { "scope": "c", "prefix": [ "tanh" ], 				"description": "float tanh() - compute hyperbolic tangent\n",
+																	"body": [ "tanh(${1:float x})" ] },
+
+	"kfun093": { "scope": "c", "prefix": [ "this_object" ], 		"description": "object this_object() - return current object\n",
+																	"body": [ "this_object()" ] },
+
+	"kfun094": { "scope": "c", "prefix": [ "this_user" ], 			"description": "object this_user() - return the current user\n",
+																	"body": [ "this_user()" ] },
+
+	"kfun095": { "scope": "c", "prefix": [ "time" ], 				"description": "int time() - return the current time\n",
+																	"body": [ "time()" ] },
+
+	"kfun096": { "scope": "c", "prefix": [ "typeof" ], 				"description": "int typeof() - return the type of a value\n",
+																	"body": [ "typeof(${1:mixed value})" ] },
+
+	"kfun097": { "scope": "c", "prefix": [ "users" ], 				"description": "object* users() - return array with users\n",
+																	"body": [ "users()" ] },
+
+	"kfun098": { "scope": "c", "prefix": [ "write_file" ], 			"description": "int write_file() - write to a file\n",
+																	"body": [ "write_file(${1:string file}, ${2:string str}, ${3:varargs int offset})" ] },
+
+	"efun001": { "scope": "c", "prefix": [ "add_event" ], 			"description": "void add_event() - create a new type of event\n",
+																	"body": [ "add_event(${1:string name})" ] },
+
+	"efun002": { "scope": "c", "prefix": [ "call_limited" ], 		"description": "mixed call_limited() - call a function with the current object owner's\n",
+																	"body": [ "call_limited(${1:string function}, ${2:mixed args...})" ] },
+
+	"efun004": { "scope": "c", "prefix": [ "call_trace" ], 			"description": "mixed** call_trace() - return the function call trace\n",
+																	"body": [ "call_trace()" ] },
+
+	"efun005": { "scope": "c", "prefix": [ "clone_object" ], 		"description": "object clone_object() - clone an object\n",
+																	"body": [ "clone_object(${1:string master}, ${2:varargs string owner})" ] },
+
+	"efun006": { "scope": "c", "prefix": [ "compile_object" ], 		"description": "object compile_object() - compile an object\n",
+																	"body": [ "compile_object(${1:string file}, ${2:varargs string source})" ] },
+
+	"efun007": { "scope": "c", "prefix": [ "destruct_object" ], 	"description": "int destruct_object() - destruct an object\n",
+																	"body": [ "destruct_object(${1:mixed obj})" ] },
+
+	"efun008": { "scope": "c", "prefix": [ "event" ], 				"description": "void event() - broadcast event to subscribers\n",
+																	"body": [ "event(${1:string name}, ${2:mixed args...})" ] },
+
+	"efun009": { "scope": "c", "prefix": [ "event_except" ], 		"description": "void event_except() - broadcast event to subscribers, excluding some\n",
+																	"body": [ "event_except(${1:string name}, ${2:object* exclude}, ${3:mixed args...})" ] },
+
+	"efun010": { "scope": "c", "prefix": [ "file_info" ], 			"description": "mixed* file_info() - get information about a single file\n",
+																	"body": [ "file_info(${1:string file})" ] },
+
+	"efun011": { "scope": "c", "prefix": [ "find_object" ], 		"description": "object find_object() - find an object\n",
+																	"body": [ "find_object(${1:string obj})" ] },
+
+	"efun012": { "scope": "c", "prefix": [ "get_dir" ], 			"description": "mixed** get_dir() - get information about files in a directory\n",
+																	"body": [ "get_dir(${1:string file})" ] },
+
+	"efun013": { "scope": "c", "prefix": [ "new_object" ], 			"description": "object new_object() - create a new light_weight object\n",
+																	"body": [ "new_object(${1|string master,object master|}, ${2:varargs string owner})" ] },
+
+	"efun014": { "scope": "c", "prefix": [ "query_events" ], 		"description": "string* query_events() - return a list of existing events\n",
+																	"body": [ "query_events()" ] },
+
+	"efun015": { "scope": "c", "prefix": [ "query_subscribed_event" ], 	"description": "object* query_subscribed_event() - return list of objects subscribed to an event\n",
+																		"body": [ "query_subscribed_event(${1:string name})" ] },
+
+	"efun016": { "scope": "c", "prefix": [ "remove_event" ], 		"description": "void remove_event() - remove an existing event type\n",
+																	"body": [ "remove_event(${1:string name})" ] },
+
+	"efun017": { "scope": "c", "prefix": [ "status" ], 				"description": "mixed* status() - get information about resource usage\n",
+																	"body": [ "status(${1:varargs mixed obj})" ] },
+
+	"efun018": { "scope": "c", "prefix": [ "subscribe_event" ], 	"description": "void subscribe_event() - subscribe to an event\n",
+																	"body": [ "subscribe_event(${1:object obj}, ${2:string name})" ] },
+
+	"efun019": { "scope": "c", "prefix": [ "unsubscribe_event" ], 	"description": "void unsubscribe_event() - unsubscribe to an event\n",
+																	"body": [ "unsubscribe_event(${1:object obj}, ${2:string name})" ] },
+
+	"lfun001": { "scope": "c", "prefix": [ "allow_subscribe" ], 	"description": "int allow_subscribe - control access to events\n",
+																	"body": [ "allow_subscribe(${1:object obj}, ${2:string name})" ] },
+	
+	"lfun002": { "scope": "c", "prefix": [ "create" ], 				"description": "void create() - initialize object\n",
+																	"body": [ "create(${1|int clone, |})" ] },
+
+	"lfun003": { "scope": "c", "prefix": [ "query_owner" ], 		"description": "string query_owner() - get the owner of an object\n",
+																	"body": [ "query_owner()" ] }
+}

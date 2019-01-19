@@ -1,0 +1,320 @@
+{
+	"name": "dgdcode",
+	"publisher": "jromland",
+	"author": {
+		"name": "Joakim Romland",
+		"url": "https://github.com/romland"
+	},
+	"displayName": "DGD Code Assist",
+	"repository": "https://github.com/romland/dgdcode",
+	"description": "",
+	"version": "1.0.0",
+	"engines": {
+		"vscode": "^1.30.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"readme": "README.md",
+	"license": "SEE LICENSE IN LICENSE.txt",
+	"activationEvents": [
+		"onCommand:dgdcode.code",
+		"onLanguage:c"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "DGD Code",
+			"properties": {
+				"DGDCode.libraryPath": {
+					"type": "string",
+					"default": "/home/jromland/dgd/klib/src",
+					"description": "Absolute path to the DGD kernel library (aka root of your \"MUD\")."
+				},
+				"DGDCode.host": {
+					"type": "string",
+					"default": "127.0.0.1",
+					"description": "IP address or number of DGD. Please note: This extension was made to work with direct access to the file system of the objects. It's only been tested with localhost. Theoretically it should work with remotely mounted filesystems, but your mileage may vary."
+				},
+				"DGDCode.port": {
+					"type": "number",
+					"default": "6047",
+					"description": "Port number to use when communicating with DGD."
+				},
+				"DGDCode.user": {
+					"type": "string",
+					"default": "admin",
+					"description": "User to connect to DGD."
+				},
+				"DGDCode.userPassword": {
+					"type": "string",
+					"default": "admin",
+					"description": "Password to use for user."
+				},
+				"DGDCode.recompileOnSave": {
+					"type": "boolean",
+					"default": true,
+					"description": "Attempt to (re)compile objects when they are saved."
+				},
+				"DGDCode.openFolderOnStartup": {
+					"type": "boolean",
+					"default": true,
+					"description": "Open the kernel library folder on startup (mainly for the development of this extension)."
+				},
+				"DGDCode.dgdLog": {
+					"type": "string",
+					"default": "/home/jromland/dgd/dgd.log",
+					"description": "Location of the DGD log file. I start DGD with: bin/dgd klib/kernel.dgd > dgd.log 2>&1"
+				},
+				"DGDCode.dgdLogFollow": {
+					"type": "boolean",
+					"default": true,
+					"description": "Open a terminal and tail -f log file in the 'dgdLog' setting."
+				},
+				"DGDCode.cloneIdsCall": {
+					"type": "string",
+					"default": "(\"/usr/System/sys/objectd\")->get_clone_ids(\"$1\")",
+					"description": "How clone IDs are fetched from the kernel library. The function will be called from /usr/<username>/_code.c. Make sure the function allows access from there. $1 will be substituted with object name when calling your function. If left empty, (\"/usr/System/sys/objectd\")->get_clone_ids(\"$1\") will be used."
+				},
+				"DGDCode.forceCExtensionConf": {
+					"type": "boolean",
+					"default": true,
+					"description": "Force changes in settings of C/C++ language extension to work better with LPC's .c files (will only affect current workspace). The settings modified are: autocomplete, errorSquiggles, intelliSenseEngineFallback and intelliSenseEngine."
+				},
+				"DGDCode.showLpcSnippetComment": {
+					"type": "boolean",
+					"default": true,
+					"description": "Will show an identifier for built-in LPC snippets to make things easier to debug when they go wrong in the extension."
+				},
+				"DGDCode.codeAssistProxyInstall": {
+					"type": "boolean",
+					"default": true,
+					"description": "Install code_assist.c automatically into your DGD library. This can be turned off in case you made tweaks to code_assist.c."
+				},
+				"DGDCode.codeAssistProxyPath": {
+					"type": "string",
+					"default": "/usr/System/sys/code_assist.c",
+					"description": "This proxy sits between the default code command and your DGD Library. It will grant the editor global access and return queried data as JSON. At this point the proxy only grant access to /usr/admin/*, but you can modify the file to grant access to other user directories."
+				}
+			}
+		},
+		"snippets": [
+			{
+				"language": "c",
+				"path": "./snippets.json"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "dgdcode.callCurrentScope",
+				"key": "ctrl+e",
+				"mac": "cmd+e",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "dgdcode.code",
+				"key": "ctrl+alt+e",
+				"mac": "cmd+alt+e",
+				"when": "editorTextFocus"
+			},
+
+			{
+				"command": "dgdcode.compileInstance",
+				"key": "ctrl+alt+r",
+				"mac": "cmd+alt+r",
+				"when": "viewItem == DGDObject"
+			},
+			{
+				"command": "dgdcode.destructInstance",
+				"key": "ctrl+alt+d",
+				"mac": "cmd+alt+d",
+				"when": "viewItem == DGDObject"
+			},
+			{
+				"command": "dgdcode.statusInstance",
+				"key": "ctrl+alt+s",
+				"mac": "cmd+alt+s",
+				"when": "viewItem == DGDObject"
+			},
+
+			{
+				"command": "dgdcode.compile",
+				"key": "ctrl+alt+r",
+				"mac": "cmd+alt+r",
+				"when": "explorer"
+			},
+			{
+				"command": "dgdcode.destruct",
+				"key": "ctrl+alt+d",
+				"mac": "cmd+alt+d",
+				"when": "explorer"
+			},
+			{
+				"command": "dgdcode.status",
+				"key": "ctrl+alt+s",
+				"mac": "cmd+alt+s",
+				"when": "explorer"
+			},
+
+			{
+				"command": "dgdcode.compileCurrent",
+				"key": "ctrl+alt+r",
+				"mac": "cmd+alt+r",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "dgdcode.destructCurrent",
+				"key": "ctrl+alt+d",
+				"mac": "cmd+alt+d",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "dgdcode.statusCurrent",
+				"key": "ctrl+alt+s",
+				"mac": "cmd+alt+s",
+				"when": "editorTextFocus"
+			}
+		],
+		"commands": [
+			{
+				"command": "dgdcode.code",
+				"title": "DGD: Code..."
+			},
+			{
+				"command": "dgdcode.reconnect",
+				"title": "DGD: Reconnect..."
+			},
+
+
+			{
+				"command": "dgdcode.compile",
+				"title": "DGD: (Re)compile Object"
+			},
+			{
+				"command": "dgdcode.destruct",
+				"title": "DGD: Destruct Object"
+			},
+			{
+				"command": "dgdcode.status",
+				"title": "DGD: Object Status"
+			},
+
+
+			{
+				"command": "dgdcode.callCurrentScope",
+				"title": "DGD: Call this function"
+			},
+			{
+				"command": "dgdcode.compileCurrent",
+				"title": "DGD: (Re)compile Object"
+			},
+			{
+				"command": "dgdcode.destructCurrent",
+				"title": "DGD: Destruct Object"
+			},
+			{
+				"command": "dgdcode.statusCurrent",
+				"title": "DGD: Object Status"
+			},
+
+
+			{
+				"command": "dgdcode.compileInstance",
+				"title": "DGD: (Re)compile Object"
+			},
+			{
+				"command": "dgdcode.destructInstance",
+				"title": "DGD: Destruct Object"
+			},
+			{
+				"command": "dgdcode.statusInstance",
+				"title": "DGD: Object Status"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"when": "resourceLangId == 'c'",
+					"command": "dgdcode.compile",
+					"group": "DGD@1"
+				},
+				{
+					"when": "resourceLangId == 'c'",
+					"command": "dgdcode.destruct",
+					"group": "DGD@1"
+				},
+				{
+					"when": "resourceLangId == 'c'",
+					"command": "dgdcode.status",
+					"group": "DGD@1"
+				},
+				{
+					"when": "resourceLangId == 'c'",
+					"command": "dgdcode.code",
+					"group": "DGD@1"
+				},
+				{
+					"command": "dgdcode.reconnect",
+					"group": "DGD@1"
+				}
+			],
+			"editor/context": [
+				{
+					"when": "editorLangId == 'c'",
+					"command": "dgdcode.callCurrentScope",
+					"group": "DGD@1"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "dgdcode.compileInstance",
+					"when": "viewItem == DGDObject",
+					"group": "DGD@1"
+				},
+				{
+					"command": "dgdcode.destructInstance",
+					"when": "viewItem == DGDObject",
+					"group": "DGD@1"
+				},
+				{
+					"command": "dgdcode.statusInstance",
+					"when": "viewItem == DGDObject",
+					"group": "DGD@1"
+				}
+			]
+		},
+		"views": {
+			"explorer": [
+				{
+					"id": "cloneView",
+					"name": "Object Instances"
+				}
+			]
+		},
+		"grammars": [
+			{
+				"scopeName": "source.c.lpc",
+				"path": "./lpc.json",
+				"injectTo": [ "source.c" ]
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"test": "npm run compile && node ./node_modules/vscode/bin/test"
+	},
+	"devDependencies": {
+		"@types/mocha": "^2.2.42",
+		"@types/node": "^8.10.25",
+		"tslint": "^5.8.0",
+		"typescript": "^3.1.4",
+		"vscode": "^1.1.26"
+	},
+	"extensionDependencies": [
+		"ms-vscode.cpptools"
+	]
+}
