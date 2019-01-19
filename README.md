@@ -11,7 +11,7 @@ these days. Thus, this editor extension was conceived.
 
 
 ## Features
-Some day I will at some GIFs or a video here.
+Some day I will add some GIFs or a video here.
 
 Some features include:
 - Simulated intellisense for DGD's 97 kfuns (as well as kernel library's)
