@@ -11,12 +11,7 @@ these days. Thus, this editor extension was conceived.
 
 
 ## Features
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
+TODO: Add a few gifs or a video here. Like this tip tells me:
 > Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
 Some features include:
@@ -49,9 +44,9 @@ Some features include:
 
 ## Important notes
 ### File transfers
-This extension does not do any file-transfers (there are plenty of extensions for this. 
-DGD Code Assist is written to be used on a local filesystem. You can probably use it 
-with a mounted remote filesystem, but that was not my use-case.
+This extension does not do any file-transfers (there are plenty of extensions for this). 
+DGD Code Assist is written to be used on a local filesystem. You *can* probably use it 
+with a mounted remote filesystem, but that was not my use-case and is not tested.
 
 ### UI updates
 It can look like the extension is sluggish, but it really isn't. It's all asynchronous
@@ -75,7 +70,7 @@ The source to code_assist.c can be found [here](https://github.com/romland/dgdco
 
 That said, the automatic installation might not be something that you want since you 
 may have tweaked the proxy's functionality. So, you can turn the automatic installation 
-off and do it manually:
+off and then install it manually:
 1. Disable the setting codeAssistProxyInstall
 2. Copy code_assist.c into a privileged location of your DGD library.
 3. Make sure it is compiled on start up of DGD (typically from initd.c or so).
@@ -106,17 +101,22 @@ If you are familiar with DGD, it's nothing out of the ordinary, really.
 Default settings are meant to work in normal situations, but if you are having doubts it is probaby
 wise to read this document (at least the bits above).
 
-TODO
-1. Install Visual Studio Code
-2. ...more instructions should be here...
+## Install with manual download
+1. Download and extract latest [release](https://github.com/romland/dgdcode/releases)
+2. In VSCode, go to extensions tab (Ctrl+Shift+x)
+3. From Extensions menu (top of the tab); "Install from VSIX...", navigate to the file you extracted.
+4. You should now get a message saying "Successfully installed the extension. *Reload to enabled it.*"
+5. DGD Code assist wants a workspace and the workspace should *always* be the root of your DGD Library.
+   Open one by `File->Open Folder`. 
+6. When you now open a .c file, it should attempt to connect to your DGD instance. You will probably get
+   some warnings now and want to tweak the settings for username/password/port etc.
 
-X. If workspace is not already open, open it by doing `File->Open Folder`. The root of your workspace must be the root
-   of the Kernel Library (or your "MUD"). If this is not the case, the extension will warn you when starting up.
-
+## Install through marketplace
+TODO: I have not published it yet.
 
 
 ## Optional tweak(s) to Kernel (or your own) Library
-Technically, no tweaks are *needed* other than the insertion of code_assist.c. 
+Technically, no tweaks are *needed* other than the insertion of code_assist.c (which is automatic). 
 That said, I do recommend the following...
 
 
@@ -275,8 +275,6 @@ Because DGD is fantastic.
 - [Mailing list](https://mail.dworkin.nl/mailman/listinfo/dgd)
 - [dworkin.nl/dgd/](http://www.dworkin.nl/dgd/)
 - [FAQs](http://dgd.is-here.com/faq/)
-
-Why haven't you heard about DGD before? God knows.
 
 
 **Enjoy.**
