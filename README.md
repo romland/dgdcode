@@ -11,8 +11,7 @@ these days. Thus, this editor extension was conceived.
 
 
 ## Features
-TODO: Add a few gifs or a video here. Like this tip tells me:
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Some day I will at some GIFs or a video here.
 
 Some features include:
 - Simulated intellisense for DGD's 97 kfuns (as well as kernel library's)
