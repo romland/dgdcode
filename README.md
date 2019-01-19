@@ -104,7 +104,7 @@ wise to read this document (at least the bits above).
 1. Download and extract latest [release](https://github.com/romland/dgdcode/releases)
 2. In VSCode, go to extensions tab (Ctrl+Shift+x)
 3. From Extensions menu (top of the tab); "Install from VSIX...", navigate to the file you extracted.
-4. You should now get a message saying "Successfully installed the extension. *Reload to enabled it.*"
+4. You should now get a message saying "Successfully installed the extension. *Reload to enable it.*"
 5. DGD Code assist wants a workspace and the workspace should *always* be the root of your DGD Library.
    Open one by `File->Open Folder`. 
 6. When you now open a .c file, it should attempt to connect to your DGD instance. You will probably get

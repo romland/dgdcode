@@ -219,11 +219,11 @@ export class DGDConnection
 
 				// Make sure we have Code Assist proxy in place.
 				this.setupCodeAssistProxy((cr: CodeResult) => {
-					if(Main.settings.codeAssistProxyInstall) {
+					if(Main.settings("codeAssistProxyInstall")) {
 						if(!cr.success) {
 							// We failed to properly find and set up proxy. Bail out!
 							console.error(cr.error);
-							this.message(`Failed to properly find and/or install ${Main.settings.codeAssistProxyPath}:\n` + cr.error);
+							this.message(`Failed to properly find and/or install ${Main.settings("codeAssistProxyPath")}:\n` + cr.error);
 							return;
 						} else {
 							console.error(cr.result);
@@ -475,7 +475,7 @@ export class DGDConnection
 			result: null
 		};
 
-		let proxyPath: string = Main.settings.codeAssistProxyPath;	// path of proxy within lib (default: /usr/System/sys/code_assist.c)
+		let proxyPath: string = Main.settings("codeAssistProxyPath");	// path of proxy within lib (default: /usr/System/sys/code_assist.c)
 		let proxyVersion: number = Main.requireCodeAssistProxyVersion;	 	// proxy version required
 
 		console.error("Proxy path: " + proxyPath);

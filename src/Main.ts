@@ -9,16 +9,22 @@
 //	- Default keybindings:
 //	  https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf
 //	- On Windows, start DGD with:
-//	  i:\TreeGame\dgd> bin\dgd klib\kernel.dgd > dgd.log 2>&1
+//	  i/TreeGame/dgd> bin/dgd klib/kernel.dgd > dgd.log 2>&1
 //	- To get name of built-in commands, best is to open keybindings configuration, 
 //	  then click "edit json" link. At the bottom there you find most (all?) 
 //	  commands.
 //	- Publishing and packaging:
+//		$ cd <extensiondir>
+//		$ vsce package
 //	  https://code.visualstudio.com/api/working-with-extensions/publishing-extension
 //	- ctrl+r a debugged window for a long long time will create some rather
 //	  weird results here and there. Additionally, the Debug Console will get
 //	  REALLY sluggish. Solution: Kill the debugee and restart with f5.
 //	- On Windows, extensions sit in: C:\Users\<username>\.vscode\extensions
+//	- For quick and dirty regex testing I use: https://regex101.com/
+//	- Sometime down the line:
+//	  let workspaceFolder = await vscode.window.showWorkspaceFolderPick({ placeHolder: 'Pick Workspace Folder' })
+
 
 import * as vscode from 'vscode';
 import { Uri } from 'vscode';
@@ -39,46 +45,52 @@ export class Main
 	public static requireCodeAssistProxyVersion: number = 9;
 
 	// https://github.com/Microsoft/vscode-extension-samples/blob/master/configuration-sample/src/extension.ts
-	public static settings: {
-		libraryPath: string;
-		host: string;
-		port: number;
-		user: string;
-		userPassword: string;
-		openFolderOnStartup: boolean;
-		recompileOnSave: boolean;
-		dgdLogFollow: boolean;
-		dgdLog: string;
-		cloneIdsCall: string;
-		forceCExtensionConf: boolean,
-		showLpcSnippetComment: boolean,
-		codeAssistProxyPath: string,
-		codeAssistProxyInstall: boolean
-	} = {
-		"libraryPath" :			(vscode.workspace.getConfiguration().get('DGDCode.libraryPath') || ""),	// What I use: i:/TreeGame/dgd/klib/src
-		"host": 				(vscode.workspace.getConfiguration().get('DGDCode.host') || "127.0.0.1"),
-		"port": 				(vscode.workspace.getConfiguration().get('DGDCode.port') || 6047),
-		"user": 				(vscode.workspace.getConfiguration().get('DGDCode.user') || "admin"),
-		"userPassword":	 		(vscode.workspace.getConfiguration().get('DGDCode.userPassword') || "admin"),
-		"openFolderOnStartup":	(vscode.workspace.getConfiguration().get('DGDCode.openFolderOnStartup') || true),
-		"recompileOnSave":		(vscode.workspace.getConfiguration().get('DGDCode.recompileOnSave') || true),
-		"dgdLogFollow":			(vscode.workspace.getConfiguration().get('DGDCode.dgdLogFollow') || true),
-		"dgdLog":				(vscode.workspace.getConfiguration().get('DGDCode.dgdLog') || ""), // What I use: i:/TreeGame/dgd/dgd.log
-		"cloneIdsCall":			(vscode.workspace.getConfiguration().get('DGDCode.cloneIdsCall') || `("/usr/System/sys/objectd")->get_clone_ids("$1")`),
-		"forceCExtensionConf":	(vscode.workspace.getConfiguration().get('DGDCode.forceCExtensionConf') || true),
-		"showLpcSnippetComment":(vscode.workspace.getConfiguration().get('DGDCode.showLpcSnippetComment') || false),
-		"codeAssistProxyPath":	(vscode.workspace.getConfiguration().get('DGDCode.codeAssistProxyPath') || `/usr/System/sys/code_assist.c`),
-		"codeAssistProxyInstall":(vscode.workspace.getConfiguration().get('DGDCode.codeAssistProxyInstall') || true),
-	};
+	/*
+		settings: {
+			libraryPath: string;
+			host: string;
+			port: number;
+			user: string;
+			userPassword: string;
+			openFolderOnStartup: boolean;
+			recompileOnSave: boolean;
+			dgdLogFollow: boolean;
+			dgdLog: string;
+			cloneIdsCall: string;
+			forceCExtensionConf: boolean,
+			showLpcSnippetComment: boolean,
+			codeAssistProxyPath: string,
+			codeAssistProxyInstall: boolean
+		}
+	*/
+	public static settings(name: string): any
+	{
+		if(vscode.workspace.workspaceFolders === undefined || vscode.workspace.workspaceFolders.length < 1) {
+			vscode.window.showInformationMessage(`There is no workspace open for DGD Code Assist to work with.`);
+			throw new URIError("No workspace");
+		}
 
+		let rsrc = vscode.workspace.workspaceFolders[0].uri;
+		let val: any = vscode.workspace.getConfiguration('DGDCode').get(`${name}`);
+
+		/*
+		console.log(""
+			+ " Setting: " + name 
+			+ " Value: " + val
+			+ " URI: " + rsrc.toString() 
+		);
+		*/
+
+		return val;
+	}
 
 	constructor(private context: vscode.ExtensionContext)
 	{
 		let disposable : vscode.Disposable;
 
-		console.log("Configuration:\n" + JSON.stringify(Main.settings, null, 4));
+		console.log("Configuration:\n" + JSON.stringify(vscode.workspace.getConfiguration('DGDCode'), null, 4));
 
-		if(Main.settings.libraryPath === "/home/jromland/dgd/klib/src") {
+		if(Main.settings("libraryPath") === "/home/jromland/dgd/klib/src") {
 			vscode.window.showErrorMessage(
 				`First time you run DGD Code Assist, configuration required. ` +
 				`Please configure your environment to get started, ` +
@@ -94,15 +106,15 @@ export class Main
 
 		// Connect to DGD
 		this.conn = new DGDConnection(
-			Main.settings.libraryPath,
-			Main.settings.host,
-			Main.settings.port, 
-			Main.settings.user, 
-			Main.settings.userPassword
+			Main.settings("libraryPath"),
+			Main.settings("host"),
+			Main.settings("port"), 
+			Main.settings("user"), 
+			Main.settings("userPassword")
 		);
 
 		// Forcefully change the C/CPP settings
-		if(Main.settings.forceCExtensionConf) {
+		if(Main.settings("forceCExtensionConf")) {
 			/*
 			I configured the C/C++ extension for LPC like this:
 				- C_Cpp.autocomplete					disabled				verified
@@ -114,7 +126,7 @@ export class Main
 			// https://github.com/Microsoft/vscode/issues/14500
 			// https://github.com/Microsoft/vscode/issues/37041 (important)
 
-			let config = vscode.workspace.getConfiguration("C_Cpp", Uri.file(Main.settings.libraryPath));
+			let config = vscode.workspace.getConfiguration("C_Cpp", Uri.file(Main.settings("libraryPath")));
 			config.update("autocomplete", "Disabled");
 			config.update("errorSquiggles", "Disabled");
 			config.update("intelliSenseEngineFallback", "Disabled");
@@ -123,10 +135,10 @@ export class Main
 		}
 
 		// Create terminal, then tail -f dgd.log
-		if(Main.settings.dgdLogFollow) {
+		if(Main.settings("dgdLogFollow")) {
 			// https://github.com/Microsoft/vscode-extension-samples/blob/master/terminal-sample/src/extension.ts
 			this.logTerminal = vscode.window.createTerminal("DGD Log");
-			this.logTerminal.sendText("tail -f " + Main.settings.dgdLog);
+			this.logTerminal.sendText("tail -f " + Main.settings("dgdLog"));
 		}
 
 		// Set up scope handler for calling current scope
@@ -138,7 +150,7 @@ export class Main
 		}
 
 		// Open klib dir on startup
-		if(Main.settings.openFolderOnStartup) {
+		if(Main.settings("openFolderOnStartup")) {
 			let success = vscode.commands.executeCommand('vscode.openFolder', Uri.file(this.conn.libPath));
 		}
 
@@ -238,7 +250,7 @@ export class Main
 
 		// Recompile on save
 		disposable = vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {
-			if(!Main.settings.recompileOnSave || e.languageId !== "c") {
+			if(!Main.settings("recompileOnSave") || e.languageId !== "c") {
 				return;
 			}
 			Lpc.compileObject(this.conn, e.fileName);

@@ -8,7 +8,7 @@
 	"displayName": "DGD Code Assist",
 	"repository": "https://github.com/romland/dgdcode",
 	"description": "",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"engines": {
 		"vscode": "^1.30.0"
 	},
@@ -59,7 +59,7 @@
 				},
 				"DGDCode.openFolderOnStartup": {
 					"type": "boolean",
-					"default": true,
+					"default": false,
 					"description": "Open the kernel library folder on startup (mainly for the development of this extension)."
 				},
 				"DGDCode.dgdLog": {

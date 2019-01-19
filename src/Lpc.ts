@@ -115,7 +115,7 @@ export class Lpc
 	public static code(str : string) : string
 	{
 		// Pass everything through a proxy in System
-		let ret = "code (\"" + Main.settings.codeAssistProxyPath.substr(0, Main.settings.codeAssistProxyPath.length-2) + "\")->code(\"" +
+		let ret = "code (\"" + Main.settings("codeAssistProxyPath").substr(0, Main.settings("codeAssistProxyPath").length-2) + "\")->code(\"" +
 			str.replace(/"/g, "\\\"") +
 		"\")";
 
@@ -181,7 +181,7 @@ export class Lpc
 					let u;
 					let diagnostics: vscode.Diagnostic[] = [];
 					for(let i = 0; i < errors.length; i++) {
-						u = vscode.Uri.file(Main.settings.libraryPath + errors[i].fileName);
+						u = vscode.Uri.file(Main.settings("libraryPath") + errors[i].fileName);
 						diagnostics.push(
 							new vscode.Diagnostic(new vscode.Range(errors[i].line - 1, 0, errors[i].line - 1, 1024), errors[i].error, vscode.DiagnosticSeverity.Error)
 						);
@@ -620,7 +620,7 @@ export class Lpc
 			'}' +
 			'return a;';
 */
-		return (Main.settings.showLpcSnippetComment ? '/* snippet 001 */' : '') +
+		return (Main.settings("showLpcSnippetComment") ? '/* snippet 001 */' : '') +
 			'd = "' + obName + '";' +
 			'z = ({ ' + cloneIds.join(",") + ' });' +
 			'a = ({ });' +
@@ -662,7 +662,7 @@ export class Lpc
 			obStr = `("${obName}")->to_string()`;
 		}
 
-		return (Main.settings.showLpcSnippetComment ? '/* snippet 002 */' : '')
+		return (Main.settings("showLpcSnippetComment") ? '/* snippet 002 */' : '')
 			+ `v = "";`
 			+ `catch( v = ${obStr} );`
 			+ `if ((a = status("${obName}")) != nil) {`
@@ -683,11 +683,11 @@ export class Lpc
 	 */
 	public static getCloneIdsSnippet(obName: string): string
 	{
-		if(Main.settings.cloneIdsCall !== null && Main.settings.cloneIdsCall.length > 0) {
-			return (Main.settings.showLpcSnippetComment ? '/* snippet 004 */' : '')
-				 + Main.settings.cloneIdsCall.replace("$1", obName);
+		if(Main.settings("cloneIdsCall") !== null && Main.settings("cloneIdsCall").length > 0) {
+			return (Main.settings("showLpcSnippetComment") ? '/* snippet 004 */' : '')
+				 + Main.settings("cloneIdsCall").replace("$1", obName);
 		} else {
-			return (Main.settings.showLpcSnippetComment ? '/* snippet 005 */' : '')
+			return (Main.settings("showLpcSnippetComment") ? '/* snippet 005 */' : '')
 				+ `"/usr/System/sys/objectd"->get_clone_ids("${obName}")`;
 		}
 	}
@@ -703,7 +703,7 @@ export class Lpc
 	public static getCallSnippet(objectName: string, funcName: string, callArgs: CallArg[]): string
 	{
 		let args: string = Lpc.callArgsToString(callArgs);
-		return (Main.settings.showLpcSnippetComment ? '/* snippet 006 */' : '')
+		return (Main.settings("showLpcSnippetComment") ? '/* snippet 006 */' : '')
 			+ `("${objectName}")->${funcName}(${args})`;
 	}
 
@@ -714,14 +714,14 @@ export class Lpc
 		if(fileName.endsWith(".c")) {
 			fileName = fileName.substr(0, fileName.length - 2);
 		}
-		return (Main.settings.showLpcSnippetComment ? '/* snippet 007 */' : '')
+		return (Main.settings("showLpcSnippetComment") ? '/* snippet 007 */' : '')
 			+ `compile_object("${fileName}")`;
 	}
 
 
 	public static getDestructObjectSnippet(fileName: string): string
 	{
-		return (Main.settings.showLpcSnippetComment ? '/* snippet 008 */' : '')
+		return (Main.settings("showLpcSnippetComment") ? '/* snippet 008 */' : '')
 			+ `destruct_object("${fileName}")`;
 	}
 }
