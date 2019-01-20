@@ -499,7 +499,13 @@ export class Lpc
 
 			// Don't quote 'nil'.
 			if(callArgs[i].val === "nil") {
-				ret += `${callArgs[i].val}`;
+				ret += callArgs[i].val;
+				continue;
+			}
+
+			// If prefixed with #, treat as code, regardless of type.
+			if(callArgs[i].val.startsWith("#")) {
+				ret += callArgs[i].val.substr(1);
 				continue;
 			}
 
