@@ -44,45 +44,6 @@ export class Main
 	public static scopeHandler: ScopeHandler;
 	public static requireCodeAssistProxyVersion: number = 9;
 
-	// https://github.com/Microsoft/vscode-extension-samples/blob/master/configuration-sample/src/extension.ts
-	/*
-		settings: {
-			libraryPath: string;
-			host: string;
-			port: number;
-			user: string;
-			userPassword: string;
-			openFolderOnStartup: boolean;
-			recompileOnSave: boolean;
-			dgdLogFollow: boolean;
-			dgdLog: string;
-			cloneIdsCall: string;
-			forceCExtensionConf: boolean,
-			showLpcSnippetComment: boolean,
-			codeAssistProxyPath: string,
-			codeAssistProxyInstall: boolean
-		}
-	*/
-	public static settings(name: string): any
-	{
-		if(vscode.workspace.workspaceFolders === undefined || vscode.workspace.workspaceFolders.length < 1) {
-			vscode.window.showInformationMessage(`There is no workspace open for DGD Code Assist to work with.`);
-			throw new URIError("No workspace");
-		}
-
-		let rsrc = vscode.workspace.workspaceFolders[0].uri;
-		let val: any = vscode.workspace.getConfiguration('DGDCode').get(`${name}`);
-
-		/*
-		console.log(""
-			+ " Setting: " + name 
-			+ " Value: " + val
-			+ " URI: " + rsrc.toString() 
-		);
-		*/
-
-		return val;
-	}
 
 	constructor(private context: vscode.ExtensionContext)
 	{
@@ -90,7 +51,7 @@ export class Main
 
 		console.log("Configuration:\n" + JSON.stringify(vscode.workspace.getConfiguration('DGDCode'), null, 4));
 
-		if(Main.settings("libraryPath") === "/home/jromland/dgd/klib/src") {
+		if(Main.setting("libraryPath") === "/home/jromland/dgd/klib/src") {
 			vscode.window.showErrorMessage(
 				`First time you run DGD Code Assist, configuration required. ` +
 				`Please configure your environment to get started, ` +
@@ -106,15 +67,15 @@ export class Main
 
 		// Connect to DGD
 		this.conn = new DGDConnection(
-			Main.settings("libraryPath"),
-			Main.settings("host"),
-			Main.settings("port"), 
-			Main.settings("user"), 
-			Main.settings("userPassword")
+			Main.setting("libraryPath"),
+			Main.setting("host"),
+			Main.setting("port"), 
+			Main.setting("user"), 
+			Main.setting("userPassword")
 		);
 
 		// Forcefully change the C/CPP settings
-		if(Main.settings("forceCExtensionConf")) {
+		if(Main.setting("forceCExtensionConf")) {
 			/*
 			I configured the C/C++ extension for LPC like this:
 				- C_Cpp.autocomplete					disabled				verified
@@ -126,7 +87,7 @@ export class Main
 			// https://github.com/Microsoft/vscode/issues/14500
 			// https://github.com/Microsoft/vscode/issues/37041 (important)
 
-			let config = vscode.workspace.getConfiguration("C_Cpp", Uri.file(Main.settings("libraryPath")));
+			let config = vscode.workspace.getConfiguration("C_Cpp", Uri.file(Main.setting("libraryPath")));
 			config.update("autocomplete", "Disabled");
 			config.update("errorSquiggles", "Disabled");
 			config.update("intelliSenseEngineFallback", "Disabled");
@@ -135,10 +96,10 @@ export class Main
 		}
 
 		// Create terminal, then tail -f dgd.log
-		if(Main.settings("dgdLogFollow")) {
+		if(Main.setting("dgdLogFollow")) {
 			// https://github.com/Microsoft/vscode-extension-samples/blob/master/terminal-sample/src/extension.ts
 			this.logTerminal = vscode.window.createTerminal("DGD Log");
-			this.logTerminal.sendText("tail -f " + Main.settings("dgdLog"));
+			this.logTerminal.sendText("tail -f " + Main.setting("dgdLog"));
 		}
 
 		// Set up scope handler for calling current scope
@@ -150,7 +111,7 @@ export class Main
 		}
 
 		// Open klib dir on startup
-		if(Main.settings("openFolderOnStartup")) {
+		if(Main.setting("openFolderOnStartup")) {
 			let success = vscode.commands.executeCommand('vscode.openFolder', Uri.file(this.conn.libPath));
 		}
 
@@ -250,7 +211,7 @@ export class Main
 
 		// Recompile on save
 		disposable = vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {
-			if(!Main.settings("recompileOnSave") || e.languageId !== "c") {
+			if(!Main.setting("recompileOnSave") || e.languageId !== "c") {
 				return;
 			}
 			Lpc.compileObject(this.conn, e.fileName);
@@ -292,5 +253,19 @@ export class Main
 			return vscode.window.activeTextEditor;
 		}
 		return null;
+	}
+
+
+	// https://github.com/Microsoft/vscode-extension-samples/blob/master/configuration-sample/src/extension.ts
+	public static setting(name: string): any
+	{
+		if(vscode.workspace.workspaceFolders === undefined || vscode.workspace.workspaceFolders.length < 1) {
+			vscode.window.showInformationMessage(`There is no workspace open for DGD Code Assist to work with.`);
+			throw new URIError("No workspace");
+		}
+
+		let rsrc = vscode.workspace.workspaceFolders[0].uri;
+		let val: any = vscode.workspace.getConfiguration('DGDCode').get(`${name}`);
+		return val;
 	}
 }

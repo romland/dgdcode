@@ -3,7 +3,6 @@ import { Lpc, CodeResult } from './Lpc';
 import { Main } from './Main';
 import net = require('net');
 import fs = require('fs');
-import { callbackify } from 'util';
 
 enum CommandType
 {
@@ -42,67 +41,17 @@ class DgdCommand
  * 		Handles sending and receiving of data from DGD. Also holds information
  * 		specific to this DGD instance, such as file paths.
  * 
- * Fragile parsing (fixed):
+ * 		We do not use the standard "code" command for a few reasons:
+ * 		- it is not privileged (need global compile_object())
+ * 		- parsing of results is extremely fragile (and especially so with errors)
+ * 		- we cannot easily make messages out of the result
+ * 		- we cannot easily match a command with a result
  * 
+ * 		So, we use a proxy in ~System that is privileged and return JSON
+ * 		messages tagged with an ID.
  * 
- * 
- * 		NOTE: Skip down to solutions, as that is the current implementation.
- * 
- * 
- * 
- * 		KEPT FOR HISTORY:
- * 		I've gone through quite a bit of pain to avoid having to make patches
- * 		to the Kernel Library.
- * 
- * 		The bottom-line is that the code to match up commands sent to DGD with
- * 		the results from DGD is fragile.
- * 
- * 		One small upside is, the code command returns a predictable sequential 
- * 		ID when it is successful. We can easily match up the command with the
- * 		result.
- * 
- * 		But here are the snags...
- * 
- * 		Which are three-fold:
- * 		1. /usr/admin/* does not have the same access as the user Admin. Which
- * 		   means I have to resort to using commands such as "compile" and 
- * 		   "destruct" instead of "code". This puts us in a situation where we
- * 		   are hard-pressed to match command and result. To work around this I
- * 		   prefix all commands with a fake command (that is an ID) which will 
- * 		   make DGD respond with "No command: my-id". This does not come without
- * 		   problems: there is a chance the prefixed command and the real command
- * 		   gets split in different chunks, in which case we are unable to match
- * 		   the result with the command. I've never seen it happen, but it sounds
- * 		   like a very likely scenario.
- * 		2. Errors do not return an identifier for which code command that failed,
- * 		   so we have to wing it and assume errors always come on the first
- * 		   command in our queue. This is very bad.
- * 		3. Without properly parsing the LPC data, we cannot know when we have 
- * 		   received a full response. As it is now we assume a result will always
- * 		   fit in one chunk (as we get it from the socket).
- * 
- * --->	The SOLUTIONS are actually simple, and would be:
- * 		1. Modify the Kernel Library wiztool to allow /usr/admin/_code.c to do
- * 		   compile_object(), destruct_object(), etc globally. I suppose the easiest
- * 		   would be to have a proxy in System which can only be called by this
- * 		   object.
- * 		2. Modify the (or add a new) code command to always package up its results 
- * 		   as dumped LPC data. Including errors and a new ID. The existing ID
- * 		   in the Kernel Library has other purposes so we cannot use that if
- * 		   we return errors. I picture such a result to look something like:
- * 		   [
- * 				"id" : 123,
- * 				"success" : true/false,
- * 				"error" : "the error",
- * 				"result" : "the result of the code command should there be one"
- * 		   ]
- * 		3. This would be solved automatically due to above (2). Parsing the LPC
- * 		   data as JSON(ish) would make any problems clear and we can wait for
- * 		   more data if we need to. We look for ##ignore## to spot the end of 
- * 		   code command result.
- *
- * 		But indeed, we'd need to inject code into the environment which is not
- * 		optimal.
+ *		This privileged object is inserted into the library as
+ *		/usr/System/sys/code_assist.c automatically.
  */
 export class DGDConnection
 {
@@ -219,11 +168,12 @@ export class DGDConnection
 
 				// Make sure we have Code Assist proxy in place.
 				this.setupCodeAssistProxy((cr: CodeResult) => {
-					if(Main.settings("codeAssistProxyInstall")) {
+					if(Main.setting("codeAssistProxyInstall")) {
 						if(!cr.success) {
-							// We failed to properly find and set up proxy. Bail out!
+							// We failed to properly find and set up proxy. Bail out.
+							// XXX: Should we close connection?
 							console.error(cr.error);
-							this.message(`Failed to properly find and/or install ${Main.settings("codeAssistProxyPath")}:\n` + cr.error);
+							this.message(`Failed to properly find and/or install ${Main.setting("codeAssistProxyPath")}:\n` + cr.error);
 							return;
 						} else {
 							console.error(cr.result);
@@ -232,14 +182,14 @@ export class DGDConnection
 						console.error("Automatic installation and setting up of code_assist proxy was disabled...");
 					}
 
-					// Check to see if the proxy'd code command behaves as expected, and store current command ID.
+					// Check to see if the proxy'd code command behaves as expected
 					this.sendThen(Lpc.code(`"Success"`), (cr: CodeResult) => {
 						if(!cr.success) {
 							this.message("Code command is incompatible. DGD Code Assist will not work properly. Unexpected result was:\n" + JSON.stringify(cr));
 							this.close();
 							return;
 						} else {
-							// Make sure we have the right sequence in the code command (reconnects might keep history intact)
+							// Make sure our command IDs will match those of DGD's.
 							this.codeCommandCount = cr.id + 1;
 						}
 
@@ -282,7 +232,7 @@ export class DGDConnection
 		let cmd: DgdCommand;
 
 		// Responses during log in process should not be parsed. Note that we also do 
-		// a pre-check of the klib code command in this stage.
+		// a pre-check of the klib code command at this stage.
 		while(this.commandQueue.length > 0) {
 			if(this.commandQueue[0].cmdType === CommandType.Login) {
 				let cr: CodeResult;
@@ -313,7 +263,7 @@ export class DGDConnection
 			return;
 		}
 
-		// ...We must now have a code-command result...
+		// ...we must now have a code-command result...
 
 		// TODO: Actually verify that we have "##ignore##" at end of our result.
 		//       If we don't, then wait for more data before parsing.
@@ -335,7 +285,7 @@ export class DGDConnection
 				continue;
 			}
 	
-			console.log("passing " + cmd.cmdId + " to callback: " + JSON.stringify(cr));
+			console.log("Recd " + cmd.cmdId + ": " + JSON.stringify(cr));
 			cmd.notify(cr);
 		}
 
@@ -404,7 +354,7 @@ export class DGDConnection
 		this.commandQueue.push(new DgdCommand(commandId, commandType, str, responseCallback));
 		this.conn.write(str + "\n");
 
-		console.log(`Sent: ${commandId}: ${str}`);
+		console.log(`Sent ${commandId}: ${str}`);
 	}
 	
 
@@ -475,8 +425,8 @@ export class DGDConnection
 			result: null
 		};
 
-		let proxyPath: string = Main.settings("codeAssistProxyPath");	// path of proxy within lib (default: /usr/System/sys/code_assist.c)
-		let proxyVersion: number = Main.requireCodeAssistProxyVersion;	 	// proxy version required
+		let proxyPath: string = Main.setting("codeAssistProxyPath");
+		let proxyVersion: number = Main.requireCodeAssistProxyVersion;
 
 		console.error("Proxy path: " + proxyPath);
 		
@@ -488,7 +438,7 @@ export class DGDConnection
 			return;
 		}
 
-		// We want this to return '1', but need to deal with all negative outcomes.
+		// We want this to return 1, but need to deal with all negative outcomes.
 		let lpc: string = ``
 		+ `    p = "${proxyPath}";`
 		+ `    v = ${proxyVersion};`
@@ -536,7 +486,6 @@ export class DGDConnection
 			}
 			console.error("File code_assist.c exists in extension folder...");
 
-			//fs.writeFileSync(root + proxyPath, "int version() { return 5; }");
 			fs.copyFileSync(codeAssistFilePath, root + proxyPath);
 			console.error(`Copied ${codeAssistFilePath} to ${root + proxyPath}...`);
 		}
@@ -552,7 +501,6 @@ export class DGDConnection
 			}
 
 			if(isNaN(Number(match[1]))) {
-				// result was not a number
 				result.success = false;
 				result.error = "Invalid result code: " + match[1];
 				callBack(result);
@@ -588,11 +536,6 @@ export class DGDConnection
 							return;
 						} else {
 							console.error("Compile successful.");
-							/*
-							result.success = true;
-							result.result = "Compiled proxy.";
-							callBack(result);
-							*/
 							// Do a sanity check again now (especially version)...  (WARNING: Recursion)
 							this.installedNewProxy = true;
 							this.setupCodeAssistProxy(callBack);
