@@ -19,6 +19,9 @@
 #include <kernel/kernel.h>
 
 #define PROXY_VERSION 10
+#ifndef USR_DIR
+# define USR_DIR "/usr"
+#endif
 #define OWNER "admin"
 #define ADMIN()	sscanf(previous_program(), USR_DIR + "/" + OWNER + "/%*s")
 
