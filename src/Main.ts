@@ -42,7 +42,7 @@ export class Main
 
 	public static clonesProvider: ClonesProvider;
 	public static scopeHandler: ScopeHandler;
-	public static requireCodeAssistProxyVersion: number = 9;
+	public static requireCodeAssistProxyVersion: number = 10;
 
 
 	constructor(private context: vscode.ExtensionContext)

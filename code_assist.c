@@ -18,7 +18,7 @@
 #include <kernel/user.h>
 #include <kernel/kernel.h>
 
-#define PROXY_VERSION 9
+#define PROXY_VERSION 10
 #define OWNER "admin"
 #define ADMIN()	sscanf(previous_program(), USR_DIR + "/" + OWNER + "/%*s")
 
@@ -115,10 +115,10 @@ private string encode_json(mixed value, mapping seen)
 			indices = map_indices(value);
 			values = map_values(value);
 			for (i = 0, --sz; i < sz; i++) {
-				str += encode_json(indices[i], seen) + ":" +
+				str += encode_json("" + indices[i], seen) + ":" +
 				encode_json(values[i], seen) + ", ";
 			}
-			return str + encode_json(indices[i], seen) + ":" +
+			return str + encode_json("" + indices[i], seen) + ":" +
 					encode_json(values[i], seen) + " }";
 
 		case T_NIL:
