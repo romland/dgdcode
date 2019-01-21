@@ -384,17 +384,29 @@ export class Lpc
 	}
 
 
+	/**
+	 * Merely used by prettify. No *really* bad consequences from the unsophisticatedness.
+	 * 
+	 * @param ob 
+	 * @param pretty 
+	 */
 	private static objectToLpcString(ob: Object, pretty?: boolean): string
 	{
-		// Just a reverse of stringToObject(); equally unsophisticated.
+		// Indent.
 		let str: string = JSON.stringify(ob, null, pretty === null ? null : 4);
-		return str
-			.replace(/\{/g, "([")
-			.replace(/\}/g, "])")
-			.replace(/\[/g, "({")
-			.replace(/\]/g, "})")
-			.replace(/nil/g, "null")
-		;
+
+		// TODO: This really needs to be fixed to parse for real. We *will* replace brackets 
+		//       in strings. It does not bother me too much for now, but I am sure it will
+		//       give me a headache at some point in the future.
+		str = str.replace(/\[/gm, "(#")
+			.replace(/\]/gm, "#)")
+			.replace(/\{/gm, "([")
+			.replace(/\}/gm, "])")
+			.replace(/\(#/gm, "({")
+			.replace(/#\)/gm, "})")
+			.replace(/null/gm, "nil");
+
+		return str;
 	}
 
 
