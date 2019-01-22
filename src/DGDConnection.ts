@@ -179,7 +179,9 @@ export class DGDConnection
 							console.error(cr.result);
 						}
 					} else {
-						console.error("Automatic installation and setting up of code_assist proxy was disabled...");
+						let msg: string = "Automatic installation and setting up of code_assist proxy was disabled...";
+						console.error(msg);
+						this.message(msg);
 					}
 
 					// Check to see if the proxy'd code command behaves as expected

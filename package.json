@@ -8,7 +8,7 @@
 	"displayName": "DGD Code Assist",
 	"repository": "https://github.com/romland/dgdcode",
 	"description": "",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"engines": {
 		"vscode": "^1.30.0"
 	},
@@ -72,6 +72,11 @@
 					"default": true,
 					"description": "Open a terminal and tail -f log file in the 'dgdLog' setting."
 				},
+				"DGDCode.cloneIdsCallEnabled": {
+					"type": "boolean",
+					"default": true,
+					"description": "Whether to query for clone IDs. If you have this setting enabled, set the cloneIdsCall to a proper value or you may get unpredictable behaviour."
+				},
 				"DGDCode.cloneIdsCall": {
 					"type": "string",
 					"default": "(\"/usr/System/sys/objectd\")->get_clone_ids(\"$1\")",
@@ -84,7 +89,7 @@
 				},
 				"DGDCode.showLpcSnippetComment": {
 					"type": "boolean",
-					"default": true,
+					"default": false,
 					"description": "Will show an identifier for built-in LPC snippets to make things easier to debug when they go wrong in the extension."
 				},
 				"DGDCode.codeAssistProxyInstall": {

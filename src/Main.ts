@@ -32,6 +32,7 @@ import { DGDConnection } from "./DGDConnection";
 import { Clone, ClonesProvider } from "./ClonesProvider";
 import { Lpc } from './Lpc';
 import { ScopeHandler } from './ScopeHandler';
+import fs = require('fs');
 
 
 export class Main
@@ -42,7 +43,7 @@ export class Main
 
 	public static clonesProvider: ClonesProvider;
 	public static scopeHandler: ScopeHandler;
-	public static requireCodeAssistProxyVersion: number = 10;
+	public static requireCodeAssistProxyVersion: number = 11;
 
 
 	constructor(private context: vscode.ExtensionContext)
@@ -51,13 +52,13 @@ export class Main
 
 		console.log("Configuration:\n" + JSON.stringify(vscode.workspace.getConfiguration('DGDCode'), null, 4));
 
-		if(Main.setting("libraryPath") === "/home/jromland/dgd/klib/src") {
+		if(!fs.existsSync(Main.setting("libraryPath"))) {
 			vscode.window.showErrorMessage(
-				`First time you run DGD Code Assist, configuration required. ` +
-				`Please configure your environment to get started, ` +
-				`settings should have opened automatically!\n\nClick "Extensions", then "DGD Code".\n\n` +
-				`Here you should set libraryPath (the important one) and your login ` +
-				`details.\n\n` +
+				`Action needed! First time you run DGD Code Assist, some configuration is required. ` +
+				`This dialog will stop appearing once the setting Library Path points to a valid directory. You will likely ` +
+				`want to tweak more things, though. The settings view should have opened automatically.\n\n` +
+				`Click "Extensions", then "DGD Code".\n\n` +
+				`Here you should set libraryPath (the important one) and your login details.\n\n` +
 				`When done, please restart VSCode...`
 			);
 			console.log("NOTE: Not starting extension because we're not configured...");
@@ -74,19 +75,11 @@ export class Main
 			Main.setting("userPassword")
 		);
 
-		// Forcefully change the C/CPP settings
+		// Forcefully change the C/CPP settings to be better suited for LPC
 		if(Main.setting("forceCExtensionConf")) {
-			/*
-			I configured the C/C++ extension for LPC like this:
-				- C_Cpp.autocomplete					disabled				verified
-				- C_Cpp.errorSquiggles					disabled				verified
-				- C_Cpp.intelliSenseEngineFallback		disabled				verified
-				- C_Cpp.intelliSenseEngine				Set to "Tag Parser"		verified
-			*/
 			// https://github.com/Microsoft/vscode/issues/15350
 			// https://github.com/Microsoft/vscode/issues/14500
 			// https://github.com/Microsoft/vscode/issues/37041 (important)
-
 			let config = vscode.workspace.getConfiguration("C_Cpp", Uri.file(Main.setting("libraryPath")));
 			config.update("autocomplete", "Disabled");
 			config.update("errorSquiggles", "Disabled");
@@ -95,10 +88,11 @@ export class Main
 			console.log("Tweaked C/C++ configuration for LPC.");
 		}
 
-		// Create terminal, then tail -f dgd.log
+		// Open a terminal, then follow dgd.log
 		if(Main.setting("dgdLogFollow")) {
 			// https://github.com/Microsoft/vscode-extension-samples/blob/master/terminal-sample/src/extension.ts
 			this.logTerminal = vscode.window.createTerminal("DGD Log");
+			// XXX: assumes GNU tail in a bash-ish env for now. Get-Content for Powershell, I believe.
 			this.logTerminal.sendText("tail -f " + Main.setting("dgdLog"));
 		}
 
