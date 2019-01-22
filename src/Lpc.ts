@@ -693,8 +693,8 @@ export class Lpc
 	{
 		if(Main.setting("cloneIdsCall") !== null && Main.setting("cloneIdsCall").length > 0) {
 			return (Main.setting("showLpcSnippetComment") ? '/* snippet 004 */' : '')
-				 + Main.setting("cloneIdsCall").replace("$1", obName);
-		} else {
+				+ Main.setting("cloneIdsCall").replace("$1", obName);
+		 } else {
 			return (Main.setting("showLpcSnippetComment") ? '/* snippet 005 */' : '')
 				+ `"/usr/System/sys/objectd"->get_clone_ids("${obName}")`;
 		}
