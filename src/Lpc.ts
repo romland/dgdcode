@@ -626,6 +626,11 @@ export class Lpc
 		return obName.indexOf("/data/") >= 0;
 	}
 
+	public static isObj(obName: string)
+	{
+		return obName.indexOf("/obj/") >= 0;
+	}
+
 
 	public static getClonesToStringSnippet(obName: string, cloneIds: number[]): string
 	{
@@ -671,6 +676,8 @@ export class Lpc
 			obStr = `"Inheritable"`;
 		} else if(Lpc.isLWO(obName)) {
 			obStr = `"LWO"`;
+		} else if(Main.setting("allowTostringCallsInObjectMaster") === false && Lpc.isObj(obName) && obName.indexOf("#") < 0) {
+			obStr = `"Master Object"`;
 		} else {
 			obStr = `("${obName}")->to_string()`;
 		}

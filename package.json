@@ -87,6 +87,11 @@
 					"default": true,
 					"description": "Force changes in settings of C/C++ language extension to work better with LPC's .c files (will only affect current workspace). The settings modified are: autocomplete, errorSquiggles, intelliSenseEngineFallback and intelliSenseEngine."
 				},
+				"DGDCode.allowTostringCallsInObjectMaster": {
+					"type": "boolean",
+					"default": true,
+					"description": "Allow to_string() to be called in master objects reciding in /obj/ directories. If you are using default functionality of the Cloud Server library, you will want to disable this."
+				},
 				"DGDCode.showLpcSnippetComment": {
 					"type": "boolean",
 					"default": false,
