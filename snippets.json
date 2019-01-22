@@ -346,6 +346,15 @@
 	"kfun098": { "scope": "c", "prefix": [ "write_file" ], 			"description": "int write_file() - write to a file\n",
 																	"body": [ "write_file(${1:string file}, ${2:string str}, ${3:varargs int offset})" ] },
 
+	"efun099": { "scope": "c", "prefix": [ "connect_datagram" ],	"description": "void connect_datagram() - establish an outbound datagram connection\n",
+																	"body": [ "connect_datagram(${1:int datagram_port}, ${2:string host}, ${3:int port})" ] },
+
+	"kfun100": { "scope": "c", "prefix": [ "instanceof" ], 			"description": "int instanceof() - check whether an object is an instance of a type\n",
+																	"body": [ "write_file(${1:object obj}, ${2:string type})" ] },
+
+
+
+
 	"efun001": { "scope": "c", "prefix": [ "add_event" ], 			"description": "void add_event() - create a new type of event\n",
 																	"body": [ "add_event(${1:string name})" ] },
 
