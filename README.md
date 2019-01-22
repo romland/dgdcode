@@ -1,4 +1,4 @@
-# DGD Code Assist README
+# DGD Code Assist
 Some time back I dipped my toes into the wonderful world of DGD again. I am
 using it as the server for a multi-player mobile device game. I'm confident 
 that that I am not alone in feeling this; if you work with DGD outside of 
@@ -80,7 +80,7 @@ off and then install it manually:
 If you are familiar with DGD, it's nothing out of the ordinary, really.
 - [Visual Studio Code](https://code.visualstudio.com/)
 - [DGD](https://github.com/dworkin/dgd)
-- [Felix' Kernel Library](https://github.com/dworkin/kernellib) OR [Felix' Cloud Server](https://github.com/dworkin/cloud-server)
+- [Cloud Server](https://github.com/dworkin/cloud-server) or [Kernel Library](https://github.com/dworkin/kernellib)
   That said, any lib will work as long as the
   "code" command is the same (or at least looks the same). In my case
   Kernel Library's wiztool is completely unmodified. Making these
@@ -231,15 +231,16 @@ See "Nice to have some day" as well.
 
 
 ## Release Notes
-### 1.0.3  22-jan-2019 
+### 1.0.4  22-jan-2019 
 - bring up to par with DGD 1.6.5 in combination with the Cloud Server library
 - refuse to start up if "Library Path" does not exist.
+- status() constants brought to 1.6.5
+- to_string() on masters was broken due to status() offsets
 - added setting cloneIdsCallEnabled (disable if your ObjectD can't provide clone IDs -- or there'll be nagging)
 - default LPC snippet comment setting is now off
 - added kfuns connect_datagram() and instanceof()
 - make sure USR_DIR exists in code_assist.c
-- NOTE: code_assist.c version is bumped and will replace any existing code_assist.c
-
+- Note: code_assist.c version is bumped and will replace any existing code_assist.c
 
 ### 1.0.2  21-jan-2019 
 - Fixed formatting of LPC data
