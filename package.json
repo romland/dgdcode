@@ -8,7 +8,7 @@
 	"displayName": "DGD Code Assist",
 	"repository": "https://github.com/romland/dgdcode",
 	"description": "",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"engines": {
 		"vscode": "^1.30.0"
 	},
