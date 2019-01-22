@@ -48,6 +48,7 @@ export class ClonesProvider implements vscode.TreeDataProvider<Clone>
 	private updateMasterAndClonesInfo(ed: vscode.TextEditor): void
 	{
 		let obName = this.conn.getObjectName(ed.document.fileName);
+		let obClones : Clone[] = [];
 
 		if(Main.setting("cloneIdsCallEnabled")) {
 			let lpc: string = Lpc.getCloneIdsSnippet(obName);
@@ -64,8 +65,6 @@ export class ClonesProvider implements vscode.TreeDataProvider<Clone>
 					this.conn.message("-Probably- unable to check for clones (result was null). To get rid of this message, add the ability to get clone IDs in your DGD library, see 'cloneIdsCall' setting. Or disable it by unchecking 'cloneIdsCallEnabled').");
 					return;
 				}
-
-				let obClones : Clone[] = [];
 
 				if(cr.result !== null) {
 					for(let i = 0; i < cr.result.length; i++) {
@@ -118,8 +117,10 @@ export class ClonesProvider implements vscode.TreeDataProvider<Clone>
 				+ `Call outs: ${cr.result[ObjectStatus.CallOuts]}\n`
 				+ `Index: ${cr.result[ObjectStatus.Index]}\n`
 				+ `Undefined: ${cr.result[ObjectStatus.Undefined]}\n`
+				/* gone in DGD 1.6.5
 				+ `Inherited: ${cr.result[ObjectStatus.Inherited]}\n`
 				+ `Instantiated: ${cr.result[ObjectStatus.Instantiated]}\n`
+				*/
 				+ ``
 			;
 			this.refresh();
@@ -136,7 +137,6 @@ export class ClonesProvider implements vscode.TreeDataProvider<Clone>
 
 	getParent?(element: Clone): vscode.ProviderResult<Clone>
 	{
-		console.log("element: " + element);
 		// A parent is always the 'master obejct' (only two levels in the tree)
 		if(element.cloneId === 0) {
 			return null;
@@ -172,7 +172,16 @@ export class Clone extends vscode.TreeItem
 
 	constructor(public objectName: string, public cloneId: number, public numClones: number) 
 	{
-		super((cloneId > 0 ? "#" + cloneId.toString() : path.basename(objectName)), cloneId > 0 ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded);
+		super(
+			(cloneId > 0 
+				? "#" + cloneId.toString() 
+				: path.basename(objectName)
+			), 
+			(cloneId > 0 
+				? vscode.TreeItemCollapsibleState.None 
+				: vscode.TreeItemCollapsibleState.Expanded
+			)
+		);
 		this.comment = "";
 		this.tip = "";
 

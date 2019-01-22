@@ -7,16 +7,19 @@ import { Main } from './Main';
 // e.g. status(obName)
 export enum ObjectStatus 
 {
-	CompileTime = 0,	/* time of compilation */
-	ProgramSize = 1,	/* program size of object */
-	DataSize = 2,		/* # variables in object */
-	Sectors = 3,		/* # sectors used by object */
-	CallOuts = 4,		/* callouts in object */
-	Index = 5,			/* unique ID for master object */
-	Undefined = 6,		/* undefined functions */
-	Inherited = 7,		/* object inherited? */
-	Instantiated = 8,	/* object instantiated? */
-	ToString = 9		/* called to_string() in object -- added by JR (klib was NOT modified) */
+	ToString = 0,		// called to_string() in object (status() was NOT modified, merged in query)
+	CompileTime = 1,	// time of compilation
+	ProgramSize = 2,	// program size of object
+	DataSize = 3,		// # variables in object
+	Sectors = 4,		// # sectors used by object
+	CallOuts = 5,		// callouts in object
+	Index = 6,			// unique ID for master object
+	Undefined = 7,		// undefined functions
+	/* Gone in DGD 1.6.5
+	Inherited = 7,		// object inherited?
+	Instantiated = 8,	// object instantiated?
+	ToString = 9		// called to_string() in object
+	*/
 }
 
 
@@ -30,7 +33,7 @@ export enum ObjectDStatus
 	NumClones = 4,
 	PreviousIssue = 5,
 	Destroyed = 6,
-	Clones = 7			// clone ids -- added by JR in ObjectD
+	Clones = 7			// clone ids -- patch to Noah Gibbs' ObjectD
 }
 
 
@@ -61,7 +64,7 @@ export enum DgdStatus
 	MaxArraySize = 21,
 	RemainingStackDepth = 22,
 	RemainingTicks = 23,
-	PrecompiledObjects = 24,
+	DatagramPorts = 24,		// NOTE: PrecompiledObjects in older DGD versions.
 	TelnetPorts = 25,
 	BinaryPorts = 26
 }
@@ -676,7 +679,7 @@ export class Lpc
 			+ `v = "";`
 			+ `catch( v = ${obStr} );`
 			+ `if ((a = status("${obName}")) != nil) {`
-			+ `		return ( a + ({ v }) );`
+			+ `		return ( ({ v }) + a );`
 			+ `} else {`
 			+ `		return nil;`
 			+ `}`
