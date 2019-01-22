@@ -19,7 +19,7 @@
 #include <kernel/kernel.h>
 
 #ifndef USR_DIR
-	#define USR_DIR "/usr"
+# define USR_DIR "/usr"
 #endif
 
 #define PROXY_VERSION 11
