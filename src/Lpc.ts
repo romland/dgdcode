@@ -254,7 +254,7 @@ export class Lpc
 			let val: any = null;
 			for(let s in ObjectStatus) {
 				if (isNaN(Number(s))) {
-					if(i === 0) {
+					if(i === 1) {
 						val = Lpc.unixTimeToDateTime(status[i++]);
 					} else {
 						val = status[i++];
