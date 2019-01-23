@@ -200,7 +200,7 @@ export class DGDConnection
 
 						Main.clonesProvider.onActiveEditorChanged(Main.activeEditor());
 						Main.scopeHandler.fetchDocumentSymbols(Main.activeEditor().document).then(() => {
-							console.log("Got symbols after logging in.");
+							// ... nothing we need to do really ...
 						});
 
 						// Output DGD status on first log in.
