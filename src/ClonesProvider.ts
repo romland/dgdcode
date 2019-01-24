@@ -56,7 +56,7 @@ export class ClonesProvider implements vscode.TreeDataProvider<Clone>
 			this.conn.sendThen(Lpc.code(lpc), (cr: CodeResult) => {
 				if(!cr.success) {
 					console.error("error getting clones: " + JSON.stringify(cr));
-					this.master = new Clone("error getting clones", 0, 0);
+					this.master = new Clone(obName, 0, 0);
 					this.refresh();
 					return;
 				}
