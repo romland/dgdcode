@@ -105,6 +105,8 @@ export class ClonesProvider implements vscode.TreeDataProvider<Clone>
 				this.master.comment = "Not Compiled";
 				this.refresh();
 				return;
+			} else if(this.master === null) {
+				return;
 			} else {
 				this.master.comment = cr.result[ObjectStatus.ToString];
 			}
